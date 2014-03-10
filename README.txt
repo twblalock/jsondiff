@@ -1,1 +1,2 @@
-Compares two jsons and outputs the differences
+Compares two json files and outputs the differences
+Exits 1 if there were mismatches

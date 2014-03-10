@@ -26,4 +26,7 @@ FILE2 = ARGV[1]
 # TODO print output side-by-side?
 a = readJson(FILE1)
 b = readJson(FILE2)
-JsonDiff.diff(a, b)
+numMismatches = JsonDiff.diff(a, b)
+if numMismatches > 0
+    exit 1
+end

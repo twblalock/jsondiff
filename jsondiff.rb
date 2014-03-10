@@ -8,20 +8,33 @@ module JsonDiff
     NULL_VALUE = "NULL" # used when a key exists but the value is null
 
     def self.diff(a, b)
-        compare(nil, a, b)
+        return compare(nil, a, b)
+    end
+
+    def self.valuesMatch(a, b)
+        return a == b && a.class == b.class
     end
 
     def self.compare(key, a, b, indent = 0)
+        numMismatches = 0
         if a.instance_of?(Hash) && b.instance_of?(Hash)
-            compareHashes(key, a, b, indent)
+            numMismatches = compareHashes(key, a, b, indent)
         elsif a.instance_of?(Array) && b.instance_of?(Array)
-            compareArrays(key, a, b, indent)
+            numMismatches = compareArrays(key, a, b, indent)
         else
-            printValues(key, a, b, !(a == b && a.class == b.class), indent)
+            isMismatch = !valuesMatch(a, b)
+            if isMismatch
+                numMismatches += 1
+            end
+            printValues(key, a, b, isMismatch, indent)
         end
+
+        return numMismatches
     end
 
     def self.compareHashes(key, a, b, indent)
+        numMismatches = 0
+
         allKeys = []
         if !a.nil?
             allKeys.concat(a.keys)
@@ -44,13 +57,17 @@ module JsonDiff
                 bval = b[key].nil? ? NULL_VALUE : b[key]
             end
 
-            compare(key, aval, bval, indent + 1)
+            numMismatches += compare(key, aval, bval, indent + 1)
         end
 
         printEndHash(key, a, b, indent)
+
+        return numMismatches
     end
 
     def self.compareArrays(key, a, b, indent)
+        numMismatches = 0
+
         printStartArray(key, a, b, indent)
 
         totalLength = 0
@@ -74,10 +91,12 @@ module JsonDiff
                 bval = b[i].nil? ? NULL_VALUE : b[i]
             end
 
-            compare(key, aval, bval, indent + 1)
+            numMismatches += compare(key, aval, bval, indent + 1)
         end
 
         printEndArray(key, a, b, indent)
+
+        return numMismatches
     end
 
     def self.printColumns(col1, col2, indent, color = COLOR_BLACK)
