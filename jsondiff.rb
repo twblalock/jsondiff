@@ -1,5 +1,4 @@
 # TODO differentiate between having a key with a null value, and not even having the key
-# TODO print the separator as black
 # TODO user-configurable column width
 
 module JsonDiff
