@@ -2,8 +2,8 @@
 # TODO user-configurable column width
 
 module JsonDiff
-    COLOR_BLACK = "\033[30m"
-    COLOR_RED = "\033[31m"
+    COLOR_RESET = "\033[0m"
+    COLOR_RED = "\033[41m\033[37m"
     INDENT_NUM_SPACES = 2
     NULL_VALUE = "NULL" # used when a key exists but the value is null
 
@@ -99,18 +99,18 @@ module JsonDiff
         return numMismatches
     end
 
-    def self.printColumns(col1, col2, indent, color = COLOR_BLACK)
+    def self.printColumns(col1, col2, indent, color = COLOR_RESET)
         pad = ""
         indent.times do
             INDENT_NUM_SPACES.times do
                 pad += " "
             end
         end
-        printf("%s%-40s%s%-8s%s%s%s\n", color, "#{pad}#{col1}", COLOR_BLACK, "|", color, "#{pad}#{col2}", COLOR_BLACK)
+        printf("%s%-40s%s%-8s%s%s%s\n", color, "#{pad}#{col1}", COLOR_RESET, "|", color, "#{pad}#{col2}", COLOR_RESET)
     end
 
     def self.printValues(key, a, b, isMismatch, indent)
-        color = COLOR_BLACK
+        color = COLOR_RESET
         if isMismatch
             color = COLOR_RED
         end
